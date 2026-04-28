@@ -57,7 +57,9 @@ class RelayClientService(
     // Polygon PROXY（Magic）合约地址，参考 builder-relayer-client config
     private val proxyFactoryAddress = "0xaB45c5A4B0c941a2F231C04C3f49182e1A254052"
     private val relayHubAddress = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
-    private val defaultProxyGasLimit = "10000000"
+    // PROXY relayCall 内层 gasLimit（签名参数）不能给过大值，否则 RelayHub 会因 gasleft 校验失败回滚。
+    private val defaultProxyGasLimit = "2400000"
+    private val maxProxyGasLimit = BigInteger.valueOf(2400000)
 
     // Safe MultiSend 合约地址（Polygon 主网）
     private val safeMultisendAddress = "0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761"
@@ -530,7 +532,16 @@ class RelayClientService(
         
         // 估算 gas limit（参考 builder-relayer-client builder/proxy.ts getGasLimit）
         val gasLimit = try {
-            estimateProxyGasLimit(fromAddress, proxyFactoryAddress, proxyCallData)
+            val estimatedGasLimit = estimateProxyGasLimit(fromAddress, proxyFactoryAddress, proxyCallData)
+            val estimatedBigInt = BigInteger(estimatedGasLimit)
+            if (estimatedBigInt > maxProxyGasLimit) {
+                logger.warn(
+                    "估算 PROXY gas limit 过大，进行截断: estimated=$estimatedGasLimit, capped=$maxProxyGasLimit"
+                )
+                maxProxyGasLimit.toString()
+            } else {
+                estimatedGasLimit
+            }
         } catch (e: Exception) {
             logger.warn("估算 PROXY gas limit 失败，使用默认值: ${e.message}", e)
             defaultProxyGasLimit

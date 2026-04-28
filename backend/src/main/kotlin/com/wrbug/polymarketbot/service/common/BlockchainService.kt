@@ -907,19 +907,41 @@ class BlockchainService(
             val unlimitedAllowance = BigInteger.valueOf(2).pow(256).minus(BigInteger.ONE)
             val approveTx = relayClientService.createUsdceApproveForWrapTx(unlimitedAllowance)
             val wrapTx = relayClientService.createWrapToPusdTx(proxyAddress, wrapAmountWei)
-
-            val safeTx = relayClientService.createMultiSendTx(listOf(approveTx, wrapTx))
-            val executeResult = relayClientService.execute(privateKey, proxyAddress, safeTx, walletType)
-            executeResult.fold(
-                onSuccess = { txHash ->
-                    logger.info("USDC.e → pUSD wrap 成功: txHash=$txHash")
-                    Result.success(txHash)
-                },
-                onFailure = { e ->
-                    logger.error("USDC.e → pUSD wrap 失败: ${e.message}", e)
-                    Result.failure(e)
+            if (walletType == WalletType.MAGIC) {
+                // MAGIC 账户走 PROXY 时，不使用 Safe MultiSend(delegatecall)；
+                // 改为顺序执行两笔 CALL，避免内层 delegatecall 回滚导致“外层成功但业务失败”。
+                val approveResult = relayClientService.execute(privateKey, proxyAddress, approveTx, walletType)
+                val approveHash = approveResult.getOrElse {
+                    logger.error("USDC.e approve 失败: ${it.message}", it)
+                    return Result.failure(it)
                 }
-            )
+                logger.info("USDC.e approve 成功: txHash=$approveHash")
+
+                val wrapResult = relayClientService.execute(privateKey, proxyAddress, wrapTx, walletType)
+                wrapResult.fold(
+                    onSuccess = { txHash ->
+                        logger.info("USDC.e → pUSD wrap 成功: txHash=$txHash")
+                        Result.success(txHash)
+                    },
+                    onFailure = { e ->
+                        logger.error("USDC.e → pUSD wrap 失败: ${e.message}", e)
+                        Result.failure(e)
+                    }
+                )
+            } else {
+                val safeTx = relayClientService.createMultiSendTx(listOf(approveTx, wrapTx))
+                val executeResult = relayClientService.execute(privateKey, proxyAddress, safeTx, walletType)
+                executeResult.fold(
+                    onSuccess = { txHash ->
+                        logger.info("USDC.e → pUSD wrap 成功: txHash=$txHash")
+                        Result.success(txHash)
+                    },
+                    onFailure = { e ->
+                        logger.error("USDC.e → pUSD wrap 失败: ${e.message}", e)
+                        Result.failure(e)
+                    }
+                )
+            }
         } catch (e: Exception) {
             logger.error("USDC.e → pUSD wrap 异常: ${e.message}", e)
             Result.failure(e)
