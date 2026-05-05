@@ -16,4 +16,6 @@ interface LeaderPoolRepository : JpaRepository<LeaderPool, Long> {
     fun findAllByOrderByCreatedAtDesc(): List<LeaderPool>
 
     fun deleteByLeaderId(leaderId: Long)
+
+    fun findByIdIn(ids: Collection<Long>): List<LeaderPool>
 }

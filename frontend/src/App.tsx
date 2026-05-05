@@ -15,6 +15,7 @@ import AccountDetail from './pages/AccountDetail'
 import AccountEdit from './pages/AccountEdit'
 import LeaderList from './pages/LeaderList'
 import LeaderPool from './pages/LeaderPool'
+import LeaderResearch from './pages/LeaderResearch'
 import LeaderAdd from './pages/LeaderAdd'
 import LeaderEdit from './pages/LeaderEdit'
 import ConfigPage from './pages/ConfigPage'
@@ -267,6 +268,7 @@ function App() {
           <Route path="/accounts/edit" element={<ProtectedRoute><AccountEdit /></ProtectedRoute>} />
           <Route path="/leaders" element={<ProtectedRoute><LeaderList /></ProtectedRoute>} />
           <Route path="/leader-pool" element={<ProtectedRoute><LeaderPool /></ProtectedRoute>} />
+          <Route path="/leader-research" element={<ProtectedRoute><LeaderResearch /></ProtectedRoute>} />
           <Route path="/leaders/add" element={<ProtectedRoute><LeaderAdd /></ProtectedRoute>} />
           <Route path="/leaders/edit" element={<ProtectedRoute><LeaderEdit /></ProtectedRoute>} />
           <Route path="/templates" element={<ProtectedRoute><TemplateList /></ProtectedRoute>} />

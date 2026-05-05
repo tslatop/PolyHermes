@@ -8,6 +8,16 @@ import type {
   LeaderPoolListResponse,
   LeaderPoolUpdatePlanRequest,
   LeaderPoolUpdateStatusRequest,
+  LeaderResearchApprovalRequest,
+  LeaderResearchApprovalResponse,
+  LeaderResearchCandidateDetail,
+  LeaderResearchCandidateListRequest,
+  LeaderResearchCandidateListResponse,
+  LeaderResearchEvent,
+  LeaderResearchRun,
+  LeaderResearchRunRequest,
+  LeaderResearchSourceState,
+  LeaderResearchSummary,
   NotificationConfig,
   NotificationConfigRequest,
   NotificationConfigUpdateRequest,
@@ -395,6 +405,29 @@ export const apiService = {
 
     remove: (data: { poolId: number }) =>
       apiClient.post<ApiResponse<void>>('/copy-trading/leader-pool/remove', data)
+  },
+
+  leaderResearch: {
+    run: (data: LeaderResearchRunRequest = {}) =>
+      apiClient.post<ApiResponse<LeaderResearchRun>>('/copy-trading/leader-research/run', data),
+
+    summary: () =>
+      apiClient.post<ApiResponse<LeaderResearchSummary>>('/copy-trading/leader-research/summary', {}),
+
+    listCandidates: (data: LeaderResearchCandidateListRequest = {}) =>
+      apiClient.post<ApiResponse<LeaderResearchCandidateListResponse>>('/copy-trading/leader-research/candidates/list', data),
+
+    detail: (data: { candidateId: number }) =>
+      apiClient.post<ApiResponse<LeaderResearchCandidateDetail>>('/copy-trading/leader-research/candidates/detail', data),
+
+    sourceHealth: () =>
+      apiClient.post<ApiResponse<LeaderResearchSourceState[]>>('/copy-trading/leader-research/source-health', {}),
+
+    events: (data: { page?: number; size?: number } = {}) =>
+      apiClient.post<ApiResponse<LeaderResearchEvent[]>>('/copy-trading/leader-research/events/list', data),
+
+    createDisabledTrialConfig: (data: LeaderResearchApprovalRequest) =>
+      apiClient.post<ApiResponse<LeaderResearchApprovalResponse>>('/copy-trading/leader-research/approval/create-disabled-trial-config', data)
   },
   
   /**

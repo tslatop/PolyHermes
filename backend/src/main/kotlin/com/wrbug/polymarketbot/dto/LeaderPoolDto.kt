@@ -75,6 +75,12 @@ data class LeaderPoolItemDto(
     val lastPromotedAt: Long?,
     val cooldownUntil: Long?,
     val locked: Boolean,
+    val researchCandidateId: Long?,
+    val researchState: String?,
+    val researchBadge: String?,
+    val researchSummary: String?,
+    val researchScore: String?,
+    val researchUpdatedAt: Long?,
     val createdAt: Long,
     val updatedAt: Long
 )

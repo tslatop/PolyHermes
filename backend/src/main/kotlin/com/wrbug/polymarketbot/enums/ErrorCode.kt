@@ -114,6 +114,14 @@ enum class ErrorCode(
     LEADER_POOL_ALREADY_EXISTS(4252, "Leader 已在池子中", "error.leader_pool_already_exists"),
     LEADER_POOL_DUPLICATE_TRIAL_CONFIG(4253, "该账户已存在此 Leader 的跟单配置", "error.leader_pool_duplicate_trial_config"),
     LEADER_POOL_CONFIRM_REQUIRED(4254, "立即启用试跟配置需要显式确认", "error.leader_pool_confirm_required"),
+    LEADER_RESEARCH_CANDIDATE_NOT_FOUND(4261, "研究候选不存在", "error.leader_research_candidate_not_found"),
+    LEADER_RESEARCH_CANDIDATE_NOT_READY(4262, "研究候选尚未进入试跟建议状态", "error.leader_research_candidate_not_ready"),
+    LEADER_RESEARCH_APPROVAL_CONFIRM_REQUIRED(4263, "创建禁用试跟配置需要显式确认", "error.leader_research_approval_confirm_required"),
+    LEADER_RESEARCH_DUPLICATE_TRIAL_CONFIG(4264, "该账户已存在此 Leader 的跟单配置", "error.leader_research_duplicate_trial_config"),
+    LEADER_RESEARCH_REAL_MONEY_FORBIDDEN(4265, "研究 Agent 不允许自动启用真钱跟单", "error.leader_research_real_money_forbidden"),
+    LEADER_RESEARCH_CANDIDATE_LOCKED(4266, "研究候选已锁定", "error.leader_research_candidate_locked"),
+    LEADER_RESEARCH_SOURCE_UNAVAILABLE(4267, "研究来源不可用", "error.leader_research_source_unavailable"),
+    LEADER_RESEARCH_PAPER_VALUATION_UNAVAILABLE(4268, "纸跟估值不可用", "error.leader_research_paper_valuation_unavailable"),
     
     // 订单相关 (4301-4399)
     ORDER_CREATE_FAILED(4301, "创建订单失败", "error.order_create_failed"),
@@ -220,6 +228,9 @@ enum class ErrorCode(
     SERVER_LEADER_POOL_LIST_FETCH_FAILED(5451, "查询 Leader 池失败", "error.server.leader_pool_list_fetch_failed"),
     SERVER_LEADER_POOL_SAVE_FAILED(5452, "保存 Leader 池失败", "error.server.leader_pool_save_failed"),
     SERVER_LEADER_POOL_CREATE_TRIAL_FAILED(5453, "创建 Leader 池试跟配置失败", "error.server.leader_pool_create_trial_failed"),
+    SERVER_LEADER_RESEARCH_RUN_FAILED(5454, "运行 Leader Research Agent 失败", "error.server.leader_research_run_failed"),
+    SERVER_LEADER_RESEARCH_FETCH_FAILED(5455, "查询 Leader Research 数据失败", "error.server.leader_research_fetch_failed"),
+    SERVER_LEADER_RESEARCH_APPROVAL_FAILED(5456, "创建禁用试跟配置失败", "error.server.leader_research_approval_failed"),
     
     // 市场服务错误 (5501-5599)
     SERVER_MARKET_PRICE_FETCH_FAILED(5501, "获取市场价格失败", "error.server.market_price_fetch_failed"),

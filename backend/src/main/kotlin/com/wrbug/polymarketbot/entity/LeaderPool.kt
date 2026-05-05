@@ -1,6 +1,7 @@
 package com.wrbug.polymarketbot.entity
 
 import com.wrbug.polymarketbot.enums.LeaderPoolStatus
+import com.wrbug.polymarketbot.enums.LeaderResearchState
 import jakarta.persistence.*
 import java.math.BigDecimal
 
@@ -62,6 +63,25 @@ data class LeaderPool(
 
     @Column(name = "locked", nullable = false)
     val locked: Boolean = false,
+
+    @Column(name = "research_candidate_id")
+    val researchCandidateId: Long? = null,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "research_state", length = 30)
+    val researchState: LeaderResearchState? = null,
+
+    @Column(name = "research_badge", length = 50)
+    val researchBadge: String? = null,
+
+    @Column(name = "research_summary", columnDefinition = "TEXT")
+    val researchSummary: String? = null,
+
+    @Column(name = "research_score", precision = 20, scale = 8)
+    val researchScore: BigDecimal? = null,
+
+    @Column(name = "research_updated_at")
+    val researchUpdatedAt: Long? = null,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: Long = System.currentTimeMillis(),

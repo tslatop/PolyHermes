@@ -416,6 +416,12 @@ class LeaderPoolService(
             lastPromotedAt = pool.lastPromotedAt,
             cooldownUntil = pool.cooldownUntil,
             locked = pool.locked,
+            researchCandidateId = pool.researchCandidateId,
+            researchState = pool.researchState?.name,
+            researchBadge = pool.researchBadge,
+            researchSummary = pool.researchSummary,
+            researchScore = pool.researchScore?.strip(),
+            researchUpdatedAt = pool.researchUpdatedAt,
             createdAt = pool.createdAt,
             updatedAt = pool.updatedAt
         )

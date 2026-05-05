@@ -162,6 +162,12 @@ class LeaderPoolControllerTest {
             lastPromotedAt = null,
             cooldownUntil = null,
             locked = false,
+            researchCandidateId = null,
+            researchState = null,
+            researchBadge = null,
+            researchSummary = null,
+            researchScore = null,
+            researchUpdatedAt = null,
             createdAt = 1,
             updatedAt = 1
         )

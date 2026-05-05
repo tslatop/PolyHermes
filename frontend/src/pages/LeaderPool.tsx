@@ -269,6 +269,17 @@ const LeaderPool: React.FC = () => {
           <Text copyable style={{ fontSize: 12, fontFamily: 'monospace' }} type="secondary">
             {item.leaderAddress}
           </Text>
+          {item.researchBadge && (
+            <Space size={4}>
+              <Tag color={item.researchState === 'TRIAL_READY' ? 'green' : 'blue'}>{t(`leaderResearch.states.${item.researchState}`, { defaultValue: item.researchState })}</Tag>
+              {item.researchScore && <Text type="secondary">{t('leaderResearch.score')}: {item.researchScore}</Text>}
+            </Space>
+          )}
+          {item.researchCandidateId && (
+            <Button type="link" size="small" style={{ padding: 0 }} onClick={() => navigate('/leader-research')}>
+              {t('leaderPool.viewResearch')}
+            </Button>
+          )}
         </Space>
       )
     },

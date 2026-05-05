@@ -95,6 +95,7 @@ coverage/
 # Test
 test-results/
 *.test.log
+.playwright-cli/
 
 # Python
 __pycache__/

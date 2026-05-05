@@ -344,6 +344,12 @@ export interface LeaderPoolItem {
   lastPromotedAt?: number
   cooldownUntil?: number
   locked: boolean
+  researchCandidateId?: number
+  researchState?: LeaderResearchState
+  researchBadge?: string
+  researchSummary?: string
+  researchScore?: string
+  researchUpdatedAt?: number
   createdAt: number
   updatedAt: number
 }
@@ -389,6 +395,231 @@ export interface LeaderPoolCreateTrialConfigRequest {
   accountId: number
   enableImmediately?: boolean
   confirm?: boolean
+}
+
+export type LeaderResearchState = 'DISCOVERED' | 'CANDIDATE' | 'PAPER' | 'TRIAL_READY' | 'COOLDOWN' | 'RETIRED'
+
+export interface LeaderResearchRunRequest {
+  dryRun?: boolean
+  triggerType?: 'MANUAL' | 'SCHEDULED' | 'PREVIEW'
+}
+
+export interface LeaderResearchRun {
+  id: number
+  status: string
+  triggerType: string
+  dryRun: boolean
+  startedAt: number
+  finishedAt?: number
+  durationMs?: number
+  sourceCountsJson?: string
+  candidateCountsJson?: string
+  partialFailure: boolean
+  skippedReason?: string
+  errorClass?: string
+  errorMessage?: string
+}
+
+export interface LeaderResearchSummary {
+  discoveredCount: number
+  candidateCount: number
+  paperCount: number
+  trialReadyCount: number
+  cooldownCount: number
+  retiredCount: number
+  activePaperSessions: number
+  pendingRiskCount: number
+  lastRun?: LeaderResearchRun
+  sourceLimitations: string[]
+}
+
+export interface LeaderResearchCandidateListRequest {
+  page?: number
+  size?: number
+  state?: LeaderResearchState
+  query?: string
+}
+
+export interface LeaderResearchCandidateListResponse {
+  list: LeaderResearchCandidate[]
+  total: number
+  summary: LeaderResearchSummary
+}
+
+export interface LeaderResearchCandidate {
+  id: number
+  normalizedWallet: string
+  leaderId?: number
+  leaderName?: string
+  poolId?: number
+  poolStatus?: string
+  suggestedFixedAmount?: string
+  suggestedMaxDailyLoss?: string
+  suggestedMaxDailyOrders?: number
+  suggestedMinPrice?: string
+  suggestedMaxPrice?: string
+  suggestedMaxPositionValue?: string
+  researchState: LeaderResearchState
+  source: string
+  sourceRank?: number
+  score?: string
+  scoreVersion?: string
+  reason?: string
+  riskFlags: string[]
+  locked: boolean
+  agentOwned: boolean
+  provenance: string
+  sourceEvidence?: string
+  firstSeenAt: number
+  lastSourceSeenAt?: number
+  lastScoredAt?: number
+  cooldownUntil?: number
+  cooldownCount: number
+  trialReadyAt?: number
+  retiredAt?: number
+  lastPaperSessionId?: number
+  latestPaperSession?: LeaderPaperSession
+}
+
+export interface LeaderResearchCandidateDetail {
+  candidate: LeaderResearchCandidate
+  latestScore?: LeaderResearchScore
+  paperSessions: LeaderPaperSession[]
+  paperTrades: LeaderPaperTrade[]
+  paperPositions: LeaderPaperPosition[]
+  events: LeaderResearchEvent[]
+}
+
+export interface LeaderResearchScore {
+  id: number
+  candidateId: number
+  runId?: number
+  scoreVersion: string
+  totalScore: string
+  profitSignal: string
+  repeatability: string
+  liquidityFit: string
+  entryPriceFit: string
+  slippageRisk: string
+  holdingPeriodFit: string
+  marketTypeRisk: string
+  drawdownRisk: string
+  exitLiquidityRisk: string
+  dataFreshness: string
+  filterPassRate: string
+  sampleTradeCount: number
+  reason?: string
+  createdAt: number
+}
+
+export interface LeaderPaperSession {
+  id: number
+  candidateId: number
+  status: string
+  startedAt: number
+  endedAt?: number
+  tradeCount: number
+  filteredCount: number
+  openExposure: string
+  totalRealizedPnl: string
+  totalUnrealizedPnl: string
+  copyablePnl: string
+  maxDrawdown: string
+  unknownValuationExposure: string
+  confirmedZeroExposure: string
+  filteredRatio: string
+  lastProcessedEventTime?: number
+  scoreSnapshot?: string
+}
+
+export interface LeaderPaperTrade {
+  id: number
+  sessionId: number
+  candidateId: number
+  activityEventId?: number
+  leaderTradeId: string
+  marketId: string
+  marketTitle?: string
+  marketSlug?: string
+  side: string
+  outcome?: string
+  outcomeIndex?: number
+  leaderPrice?: string
+  leaderSize?: string
+  simulatedPrice?: string
+  simulatedSize?: string
+  simulatedAmount?: string
+  fillAssumption: string
+  quoteConfidence: string
+  quoteSource?: string
+  quoteTimestamp?: number
+  filterResult: string
+  filterReason?: string
+  valuationStatus: string
+  realizedPnl?: string
+  eventTime: number
+  createdAt: number
+}
+
+export interface LeaderPaperPosition {
+  id: number
+  sessionId: number
+  candidateId: number
+  marketId: string
+  outcome?: string
+  outcomeIndex?: number
+  quantity: string
+  cost: string
+  avgPrice: string
+  currentPrice?: string
+  currentValue: string
+  realizedPnl: string
+  unrealizedPnl: string
+  valuationStatus: string
+  quoteConfidence: string
+  quoteSource?: string
+  quoteTimestamp?: number
+  updatedAt: number
+}
+
+export interface LeaderResearchSourceState {
+  sourceType: string
+  status: string
+  lastSuccessAt?: number
+  lastFailureAt?: number
+  lastRunAt?: number
+  lastCandidateCount: number
+  errorClass?: string
+  errorMessage?: string
+  stale: boolean
+  disabledReason?: string
+  lastCursor?: string
+  updatedAt: number
+}
+
+export interface LeaderResearchEvent {
+  id: number
+  candidateId?: number
+  runId?: number
+  eventType: string
+  reason?: string
+  payloadSummary?: string
+  notificationStatus: string
+  notificationError?: string
+  dedupeKey?: string
+  createdAt: number
+  notifiedAt?: number
+}
+
+export interface LeaderResearchApprovalRequest {
+  candidateId: number
+  accountId: number
+  confirm?: boolean
+}
+
+export interface LeaderResearchApprovalResponse {
+  copyTrading: CopyTrading
+  warning: string
 }
 
 /**
