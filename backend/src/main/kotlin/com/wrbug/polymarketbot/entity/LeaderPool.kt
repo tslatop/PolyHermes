@@ -68,7 +68,7 @@ data class LeaderPool(
     val researchCandidateId: Long? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "research_state", length = 30)
+    @Column(name = "research_state", length = 30, columnDefinition = "VARCHAR(30)")
     val researchState: LeaderResearchState? = null,
 
     @Column(name = "research_badge", length = 50)

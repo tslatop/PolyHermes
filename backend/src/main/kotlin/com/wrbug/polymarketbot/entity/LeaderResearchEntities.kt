@@ -12,11 +12,11 @@ data class LeaderResearchRun(
     val id: Long? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 30)
+    @Column(name = "status", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val status: LeaderResearchRunStatus = LeaderResearchRunStatus.RUNNING,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "trigger_type", nullable = false, length = 30)
+    @Column(name = "trigger_type", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val triggerType: LeaderResearchTriggerType = LeaderResearchTriggerType.MANUAL,
 
     @Column(name = "dry_run", nullable = false)
@@ -76,7 +76,7 @@ data class LeaderResearchCandidate(
     val poolId: Long? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "research_state", nullable = false, length = 30)
+    @Column(name = "research_state", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val researchState: LeaderResearchState = LeaderResearchState.DISCOVERED,
 
     @Column(name = "source", nullable = false, length = 50)
@@ -104,7 +104,7 @@ data class LeaderResearchCandidate(
     val agentOwned: Boolean = true,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "provenance", nullable = false, length = 50)
+    @Column(name = "provenance", nullable = false, length = 50, columnDefinition = "VARCHAR(50)")
     val provenance: LeaderCandidateProvenance = LeaderCandidateProvenance.AGENT_CREATED,
 
     @Column(name = "source_evidence", columnDefinition = "TEXT")
@@ -220,7 +220,7 @@ data class LeaderResearchEvent(
     val runId: Long? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "event_type", nullable = false, length = 50)
+    @Column(name = "event_type", nullable = false, length = 50, columnDefinition = "VARCHAR(50)")
     val eventType: LeaderResearchEventType,
 
     @Column(name = "reason", columnDefinition = "TEXT")
@@ -230,7 +230,7 @@ data class LeaderResearchEvent(
     val payloadSummary: String? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "notification_status", nullable = false, length = 30)
+    @Column(name = "notification_status", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val notificationStatus: LeaderResearchNotificationStatus = LeaderResearchNotificationStatus.PENDING,
 
     @Column(name = "notification_error", columnDefinition = "TEXT")
@@ -254,11 +254,11 @@ data class LeaderResearchSourceState(
     val id: Long? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "source_type", nullable = false, length = 50, unique = true)
+    @Column(name = "source_type", nullable = false, length = 50, unique = true, columnDefinition = "VARCHAR(50)")
     val sourceType: LeaderResearchSourceType,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 30)
+    @Column(name = "status", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val status: LeaderResearchSourceStatus = LeaderResearchSourceStatus.DISABLED,
 
     @Column(name = "last_success_at")
@@ -363,7 +363,7 @@ data class LeaderActivityEvent(
     val unusableReason: String? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "paper_processing_status", nullable = false, length = 30)
+    @Column(name = "paper_processing_status", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val paperProcessingStatus: LeaderPaperProcessingStatus = LeaderPaperProcessingStatus.NEW,
 
     @Column(name = "processing_attempts", nullable = false)
@@ -396,7 +396,7 @@ data class LeaderPaperSession(
     val candidateId: Long,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 30)
+    @Column(name = "status", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val status: LeaderPaperSessionStatus = LeaderPaperSessionStatus.ACTIVE,
 
     @Column(name = "started_at", nullable = false)
@@ -501,11 +501,11 @@ data class LeaderPaperTrade(
     val simulatedAmount: BigDecimal? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "fill_assumption", nullable = false, length = 30)
+    @Column(name = "fill_assumption", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val fillAssumption: LeaderPaperFillAssumption = LeaderPaperFillAssumption.LEADER_PRICE,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "quote_confidence", nullable = false, length = 30)
+    @Column(name = "quote_confidence", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val quoteConfidence: LeaderResearchQuoteConfidence = LeaderResearchQuoteConfidence.UNKNOWN,
 
     @Column(name = "quote_source", length = 50)
@@ -515,14 +515,14 @@ data class LeaderPaperTrade(
     val quoteTimestamp: Long? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "filter_result", nullable = false, length = 30)
+    @Column(name = "filter_result", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val filterResult: LeaderPaperFilterResult = LeaderPaperFilterResult.PASSED,
 
     @Column(name = "filter_reason", columnDefinition = "TEXT")
     val filterReason: String? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "valuation_status", nullable = false, length = 30)
+    @Column(name = "valuation_status", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val valuationStatus: LeaderResearchValuationStatus = LeaderResearchValuationStatus.UNKNOWN,
 
     @Column(name = "realized_pnl", precision = 20, scale = 8)
@@ -579,11 +579,11 @@ data class LeaderPaperPosition(
     val unrealizedPnl: BigDecimal = BigDecimal.ZERO,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "valuation_status", nullable = false, length = 30)
+    @Column(name = "valuation_status", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val valuationStatus: LeaderResearchValuationStatus = LeaderResearchValuationStatus.UNKNOWN,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "quote_confidence", nullable = false, length = 30)
+    @Column(name = "quote_confidence", nullable = false, length = 30, columnDefinition = "VARCHAR(30)")
     val quoteConfidence: LeaderResearchQuoteConfidence = LeaderResearchQuoteConfidence.UNKNOWN,
 
     @Column(name = "quote_source", length = 50)
