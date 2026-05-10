@@ -35,6 +35,16 @@ class PolymarketActivityWsResearchCaptureTest {
     }
 
     @Test
+    fun `disabled global capture health is written once to avoid source state lock churn`() {
+        val service = service(globalCaptureEnabled = false)
+
+        invokeHandleMessage(service, "not-json")
+        invokeHandleMessage(service, "still-not-json")
+
+        assertEquals(1, Mockito.mockingDetails(healthService).invocations.size)
+    }
+
+    @Test
     fun `write cap records degraded source health`() {
         val service = service(globalCaptureEnabled = true, maxWritesPerMinute = 0)
 

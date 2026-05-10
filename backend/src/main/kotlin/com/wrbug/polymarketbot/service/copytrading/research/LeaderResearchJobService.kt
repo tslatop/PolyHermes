@@ -3,6 +3,7 @@ package com.wrbug.polymarketbot.service.copytrading.research
 import com.wrbug.polymarketbot.entity.LeaderResearchRun
 import com.wrbug.polymarketbot.enums.LeaderResearchEventType
 import com.wrbug.polymarketbot.enums.LeaderResearchRunStatus
+import com.wrbug.polymarketbot.enums.LeaderResearchSourceStatus
 import com.wrbug.polymarketbot.enums.LeaderResearchState
 import com.wrbug.polymarketbot.enums.LeaderResearchTriggerType
 import com.wrbug.polymarketbot.repository.LeaderActivityEventRepository
@@ -97,7 +98,9 @@ class LeaderResearchJobService(
             }
             val lastEventCursor = activityEventRepository.findTopByOrderByEventTimeDesc()
                 ?.let { "${it.eventTime}:${it.stableEventKey}" }
-            val hasSourceProblems = sourceResults.any { it.status.name == "FAILURE" || it.status.name == "DEGRADED" }
+            val hasSourceProblems = sourceResults.any {
+                !it.expectedLimitation && (it.status == LeaderResearchSourceStatus.FAILURE || it.status == LeaderResearchSourceStatus.DEGRADED)
+            }
             run = runRepository.save(
                 run.copy(
                     status = if (hasSourceProblems) LeaderResearchRunStatus.PARTIAL_FAILURE else LeaderResearchRunStatus.SUCCESS,

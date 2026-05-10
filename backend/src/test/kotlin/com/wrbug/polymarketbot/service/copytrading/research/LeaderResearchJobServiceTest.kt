@@ -78,6 +78,44 @@ class LeaderResearchJobServiceTest {
     }
 
     @Test
+    fun `expected disabled sources do not mark run partial failure`() {
+        val service = service()
+        stubRunSaves()
+        Mockito.`when`(sourceService.discoverCandidates(1L)).thenReturn(
+            listOf(
+                LeaderResearchSourceRunResult(LeaderResearchSourceType.WATCHLIST, emptyList(), LeaderResearchSourceStatus.SUCCESS),
+                LeaderResearchSourceRunResult(
+                    LeaderResearchSourceType.ACTIVITY_DERIVED,
+                    emptyList(),
+                    LeaderResearchSourceStatus.DEGRADED,
+                    limitation = "Global activity capture is disabled",
+                    expectedLimitation = true
+                ),
+                LeaderResearchSourceRunResult(
+                    LeaderResearchSourceType.GLOBAL_ACTIVITY_CAPTURE,
+                    emptyList(),
+                    LeaderResearchSourceStatus.DISABLED,
+                    limitation = "Global activity capture is disabled",
+                    expectedLimitation = true
+                ),
+                LeaderResearchSourceRunResult(
+                    LeaderResearchSourceType.PUBLIC_LEADERBOARD,
+                    emptyList(),
+                    LeaderResearchSourceStatus.DISABLED,
+                    limitation = "Public leaderboard source is intentionally disabled",
+                    expectedLimitation = true
+                )
+            )
+        )
+
+        val run = service.runOnce(dryRun = false, triggerType = LeaderResearchTriggerType.MANUAL)
+
+        assertEquals(LeaderResearchRunStatus.SUCCESS, run.status)
+        assertFalse(run.partialFailure)
+        Mockito.verify(paperTradingService).processPaperCandidates(run.id)
+    }
+
+    @Test
     fun `preview run does not score advance or paper trade`() {
         val service = service()
         stubRunSaves()

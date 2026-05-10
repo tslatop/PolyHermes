@@ -468,22 +468,31 @@ class PolymarketActivityWsService(
         if (shouldThrottleResearchCaptureHealth(status)) {
             return
         }
-        researchSourceHealthProvider.getIfAvailable()?.record(
-            sourceType = LeaderResearchSourceType.GLOBAL_ACTIVITY_CAPTURE,
-            status = status,
-            candidateCount = candidateCount,
-            errorClass = errorClass,
-            errorMessage = errorMessage,
-            disabledReason = disabledReason,
-            lastCursor = lastCursor
-        )
+        try {
+            researchSourceHealthProvider.getIfAvailable()?.record(
+                sourceType = LeaderResearchSourceType.GLOBAL_ACTIVITY_CAPTURE,
+                status = status,
+                candidateCount = candidateCount,
+                errorClass = errorClass,
+                errorMessage = errorMessage,
+                disabledReason = disabledReason,
+                lastCursor = lastCursor
+            )
+        } catch (e: Exception) {
+            logger.warn("记录研究全局 activity 来源健康失败: status={}, error={}", status, e.message)
+        }
     }
 
     private fun shouldThrottleResearchCaptureHealth(status: LeaderResearchSourceStatus): Boolean {
         val now = System.currentTimeMillis()
-        val throttle = status != LeaderResearchSourceStatus.SUCCESS &&
+        val throttleWindow = when (status) {
+            LeaderResearchSourceStatus.DISABLED -> RESEARCH_CAPTURE_DISABLED_HEALTH_THROTTLE_MS
+            LeaderResearchSourceStatus.SUCCESS -> 0L
+            else -> RESEARCH_CAPTURE_HEALTH_THROTTLE_MS
+        }
+        val throttle = throttleWindow > 0 &&
             status == researchCaptureLastHealthStatus &&
-            now - researchCaptureLastHealthWriteAt < RESEARCH_CAPTURE_HEALTH_THROTTLE_MS
+            now - researchCaptureLastHealthWriteAt < throttleWindow
         if (!throttle) {
             researchCaptureLastHealthStatus = status
             researchCaptureLastHealthWriteAt = now
@@ -678,5 +687,6 @@ class PolymarketActivityWsService(
 
     companion object {
         private const val RESEARCH_CAPTURE_HEALTH_THROTTLE_MS = 60_000L
+        private const val RESEARCH_CAPTURE_DISABLED_HEALTH_THROTTLE_MS = 60L * 60L * 1000L
     }
 }

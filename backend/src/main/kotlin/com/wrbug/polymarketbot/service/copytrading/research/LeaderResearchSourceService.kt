@@ -25,7 +25,8 @@ data class LeaderResearchSourceRunResult(
     val status: LeaderResearchSourceStatus,
     val errorClass: String? = null,
     val errorMessage: String? = null,
-    val limitation: String? = null
+    val limitation: String? = null,
+    val expectedLimitation: Boolean = false
 )
 
 private data class SourceDiscovery(
@@ -108,7 +109,8 @@ class LeaderResearchSourceService(
                 LeaderResearchSourceType.ACTIVITY_DERIVED,
                 activity,
                 if (globalCaptureEnabled) LeaderResearchSourceStatus.SUCCESS else LeaderResearchSourceStatus.DEGRADED,
-                limitation = if (globalCaptureEnabled) null else GLOBAL_CAPTURE_DISABLED_LIMITATION
+                limitation = if (globalCaptureEnabled) null else GLOBAL_CAPTURE_DISABLED_LIMITATION,
+                expectedLimitation = !globalCaptureEnabled
             )
         )
         if (!globalCaptureEnabled) {
@@ -116,14 +118,16 @@ class LeaderResearchSourceService(
                 LeaderResearchSourceType.GLOBAL_ACTIVITY_CAPTURE,
                 emptyList(),
                 LeaderResearchSourceStatus.DISABLED,
-                limitation = GLOBAL_CAPTURE_DISABLED_LIMITATION
+                limitation = GLOBAL_CAPTURE_DISABLED_LIMITATION,
+                expectedLimitation = true
             )
         }
         results += LeaderResearchSourceRunResult(
             LeaderResearchSourceType.PUBLIC_LEADERBOARD,
             emptyList(),
             LeaderResearchSourceStatus.DISABLED,
-            limitation = PUBLIC_LEADERBOARD_DISABLED_LIMITATION
+            limitation = PUBLIC_LEADERBOARD_DISABLED_LIMITATION,
+            expectedLimitation = true
         )
         return results
     }
@@ -406,7 +410,8 @@ class LeaderResearchSourceService(
         )
         return result.copy(
             status = LeaderResearchSourceStatus.DEGRADED,
-            limitation = GLOBAL_CAPTURE_DISABLED_LIMITATION
+            limitation = GLOBAL_CAPTURE_DISABLED_LIMITATION,
+            expectedLimitation = true
         )
     }
 
@@ -429,7 +434,8 @@ class LeaderResearchSourceService(
             sourceType = LeaderResearchSourceType.PUBLIC_LEADERBOARD,
             candidates = emptyList(),
             status = LeaderResearchSourceStatus.DISABLED,
-            limitation = PUBLIC_LEADERBOARD_DISABLED_LIMITATION
+            limitation = PUBLIC_LEADERBOARD_DISABLED_LIMITATION,
+            expectedLimitation = true
         )
     }
 
@@ -452,7 +458,8 @@ class LeaderResearchSourceService(
             sourceType = LeaderResearchSourceType.GLOBAL_ACTIVITY_CAPTURE,
             candidates = emptyList(),
             status = LeaderResearchSourceStatus.DISABLED,
-            limitation = GLOBAL_CAPTURE_DISABLED_LIMITATION
+            limitation = GLOBAL_CAPTURE_DISABLED_LIMITATION,
+            expectedLimitation = true
         )
     }
 
